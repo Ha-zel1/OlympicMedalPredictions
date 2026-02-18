@@ -1,0 +1,110 @@
+import React, { useState, useEffect } from 'react';
+import { LineChart, XAxis, YAxis, Tooltip, Legend, Line, BarChart, Bar, CartesianGrid } from 'recharts';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
+const OlympicPrediction = () => {
+  const [selectedYear, setSelectedYear] = useState('2028');
+  const [predictionData, setPredictionData] = useState(null);
+  const [featureImportance, setFeatureImportance] = useState([
+    { feature: 'GDP_USD', importance: 0.35 },
+    { feature: 'GDP_per_capita_USD', importance: 0.25 },
+    { feature: 'Population', importance: 0.20 },
+    { feature: 'Past_Total', importance: 0.20 }
+  ]);
+
+  // Sample prediction data - replace this with your actual model predictions
+  const sampleData = {
+    '2028': [
+      { Country_Name: 'USA', Total: 110, Predicted_Total: 113 },
+      { Country_Name: 'China', Total: 90, Predicted_Total: 88 },
+      { Country_Name: 'GB', Total: 70, Predicted_Total: 65 },
+      // Add more countries as needed
+    ]
+  };
+
+  const handleShowCharts = () => {
+    // In a real application, this would make an API call to your model
+    setPredictionData(sampleData[selectedYear]);
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-6">
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Olympic Medal Prediction Tool</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600 mb-4">
+            This tool uses machine learning to predict future Olympic medal counts based on historical data,
+            GDP, population, and past performance.
+          </p>
+          
+          <div className="flex gap-4 mb-6">
+            <select 
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className="p-2 border rounded"
+            >
+              <option value="2028">2028</option>
+              <option value="2032">2032</option>
+              <option value="2036">2036</option>
+            </select>
+            <button 
+              onClick={handleShowCharts}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Show Charts
+            </button>
+          </div>
+
+          {predictionData && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Medal Predictions Comparison</h3>
+                <BarChart width={800} height={400} data={predictionData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="Country_Name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="Total" fill="#8884d8" name="Actual Medals" />
+                  <Bar dataKey="Predicted_Total" fill="#82ca9d" name="Predicted Medals" />
+                </BarChart>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Feature Importance</h3>
+                <BarChart width={800} height={300} data={featureImportance}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="feature" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="importance" fill="#82ca9d" />
+                </BarChart>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Residual Plot</h3>
+                <ScatterChart width={800} height={300}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="Total" name="Actual Medals" />
+                  <YAxis dataKey="residual" name="Residuals" />
+                  <Tooltip />
+                  <Scatter
+                    data={predictionData.map(d => ({
+                      Total: d.Total,
+                      residual: d.Predicted_Total - d.Total
+                    }))}
+                    fill="#8884d8"
+                  />
+                </ScatterChart>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default OlympicPrediction;
