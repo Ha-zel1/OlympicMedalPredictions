@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Model Explainability | OlympicAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .olympic-ring { width: 30px; height: 30px; border-radius: 50%; border: 3px solid; }
+        .ring-blue { border-color: #0085C7; }
+        .ring-yellow { border-color: #F4C300; }
+        .ring-black { border-color: #000000; }
+        .ring-green { border-color: #009F3D; }
+        .ring-red { border-color: #DF0024; }
+        .metric-badge {
+            transition: all 0.3s ease;
+        }
+        .metric-badge:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="flex space-x-1">
+                        <div class="olympic-ring ring-blue"></div>
+                        <div class="olympic-ring ring-yellow -ml-2"></div>
+                        <div class="olympic-ring ring-black -ml-2"></div>
+                        <div class="olympic-ring ring-green -ml-2"></div>
+                        <div class="olympic-ring ring-red -ml-2"></div>
+                    </div>
+                    <span class="text-xl font-bold">OlympicMedalMetrics</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="/" class="hover:text-yellow-300 transition font-medium">Dashboard</a>
+                    <a href="/analytics" class="text-yellow-300 font-medium">Analytics</a>
+                    <a href="/whatif" class="hover:text-yellow-300 transition font-medium">What-If Simulator</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-3">
+                <i class="fas fa-chart-pie text-purple-600 mr-3"></i>
+                Analytics & Model Explainability
+            </h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Deep dive into the machine learning model's performance, understand how predictions are made, 
+                and explore the data-driven insights behind Olympic medal forecasting.
+            </p>
+        </div>
+
+        <!-- Key Insights Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="glass rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <i class="fas fa-globe text-3xl text-blue-500"></i>
+                    <span class="text-sm text-gray-500">Coverage</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800">{{ insights.total_countries }}</h3>
+                <p class="text-sm text-gray-600">Countries Analyzed</p>
+            </div>
+
+            <div class="glass rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <i class="fas fa-arrow-up text-3xl text-green-500"></i>
+                    <span class="text-sm text-gray-500">Growth</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800">{{ insights.countries_with_increase }}</h3>
+                <p class="text-sm text-gray-600">Countries Predicted to Improve</p>
+            </div>
+
+            <div class="glass rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <i class="fas fa-arrow-down text-3xl text-red-500"></i>
+                    <span class="text-sm text-gray-500">Decline</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800">{{ insights.countries_with_decrease }}</h3>
+                <p class="text-sm text-gray-600">Countries Predicted to Decline</p>
+            </div>
+
+            <div class="glass rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <i class="fas fa-trophy text-3xl text-yellow-500"></i>
+                    <span class="text-sm text-gray-500">Top Gainer</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">{{ insights.top_gainer }}</h3>
+                <p class="text-sm text-gray-600">+{{ "%.0f"|format(insights.top_gainer_increase) }} medals</p>
+            </div>
+        </div>
+
+        <!-- Model Performance Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Performance Metrics -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-bullseye text-blue-600 mr-3"></i>
+                    Model Performance Metrics
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="metric-badge bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-600 mb-1">R² Score</p>
+                        <h4 class="text-2xl font-bold text-blue-600">{{ "%.3f"|format(metrics.r2_score) }}</h4>
+                        <p class="text-xs text-gray-500">Variance Explained</p>
+                    </div>
+                    <div class="metric-badge bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-600 mb-1">RMSE</p>
+                        <h4 class="text-2xl font-bold text-green-600">{{ "%.2f"|format(metrics.rmse) }}</h4>
+                        <p class="text-xs text-gray-500">Root Mean Sq. Error</p>
+                    </div>
+                    <div class="metric-badge bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-600 mb-1">MAE</p>
+                        <h4 class="text-2xl font-bold text-purple-600">{{ "%.2f"|format(metrics.mae) }}</h4>
+                        <p class="text-xs text-gray-500">Mean Abs. Error</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-700 mb-2">What these metrics mean:</h4>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li><strong>R² Score ({{ "%.1f"|format(metrics.r2_score * 100) }}%):</strong> The model explains {{ "%.1f"|format(metrics.r2_score * 100) }}% of the variance in medal counts.</li>
+                        <li><strong>RMSE ({{ "%.1f"|format(metrics.rmse) }} medals):</strong> On average, predictions are off by about {{ "%.0f"|format(metrics.rmse) }} medals.</li>
+                        <li><strong>MAE ({{ "%.1f"|format(metrics.mae) }} medals):</strong> The typical prediction error is {{ "%.0f"|format(metrics.mae) }} medals.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature Importance Chart -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
+                    Feature Importance Analysis
+                </h2>
+                
+                <div class="space-y-4" id="featureChart">
+                    {% for feature in feature_importance %}
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-medium text-gray-700">
+                                {% if feature.feature == 'Past_Total' %}
+                                    <i class="fas fa-medal text-yellow-500 mr-2"></i>Past Performance
+                                {% elif feature.feature == 'GDP_USD' %}
+                                    <i class="fas fa-dollar-sign text-green-500 mr-2"></i>GDP (USD)
+                                {% elif feature.feature == 'Population' %}
+                                    <i class="fas fa-users text-blue-500 mr-2"></i>Population
+                                {% elif feature.feature == 'GDP_per_capita_USD' %}
+                                    <i class="fas fa-chart-line text-purple-500 mr-2"></i>GDP per Capita
+                                {% else %}
+                                    {{ feature.feature }}
+                                {% endif %}
+                            </span>
+                            <span class="text-sm font-bold text-purple-600">{{ "%.3f"|format(feature.importance) }}</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-1000"
+                                 style="width: {{ (feature.importance / feature_importance[0].importance * 100)|int }}%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {% if feature.feature == 'Past_Total' %}
+                                Historical Olympic performance is the strongest predictor
+                            {% elif feature.feature == 'GDP_USD' %}
+                                Economic size significantly influences medal count
+                            {% elif feature.feature == 'Population' %}
+                                Larger populations tend to win more medals
+                            {% elif feature.feature == 'GDP_per_capita_USD' %}
+                                Economic development level affects sports infrastructure
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Methodology Section -->
+        <div class="glass rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-cogs text-gray-600 mr-3"></i>
+                Model Methodology
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Algorithm</h3>
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-purple-800 mb-2">Gradient Boosting Regressor</h4>
+                        <p class="text-sm text-gray-700 mb-3">
+                            An ensemble machine learning technique that builds models sequentially, 
+                            with each new model correcting errors made by previous ones.
+                        </p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>200 Estimators</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Learning Rate: 0.1</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Max Depth: 4</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Random State: 42 (reproducibility)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Features Used</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm">
+                            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-medal text-yellow-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Past Total Medals</h4>
+                                <p class="text-sm text-gray-600">Previous Olympic performance (4-year lag)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-dollar-sign text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">GDP (USD)</h4>
+                                <p class="text-sm text-gray-600">Gross Domestic Product in US dollars</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-users text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Population</h4>
+                                <p class="text-sm text-gray-600">Total country population</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-chart-line text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">GDP per Capita</h4>
+                                <p class="text-sm text-gray-600">Economic development indicator</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualizations Gallery -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Model Comparison -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-chart-bar text-blue-500 mr-2"></i>
+                    Model Comparison (All 3 Algorithms)
+                </h3>
+                <img src="{{ url_for('static', filename='images/model_comparison.png') }}" 
+                     alt="Model Comparison" 
+                     class="w-full rounded-lg shadow">
+                <p class="text-sm text-gray-600 mt-3">
+                    Comparison of Linear Regression vs Gradient Boosting performance. Gradient Boosting (R²=0.918) significantly outperforms Linear Regression (R²=0.760).
+                </p>
+            </div>
+
+            <!-- SVM Confusion Matrix -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-table text-purple-500 mr-2"></i>
+                    SVM Classification Results
+                </h3>
+                <img src="{{ url_for('static', filename='images/svm_confusion_matrix.png') }}" 
+                     alt="SVM Confusion Matrix" 
+                     class="w-full rounded-lg shadow">
+                <p class="text-sm text-gray-600 mt-3">
+                    SVM classifier predicts whether countries are above or below median medal count (61% accuracy).
+                </p>
+            </div>
+
+            <!-- Actual vs Predicted -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-crosshairs text-green-500 mr-2"></i>
+                    Actual vs Predicted
+                </h3>
+                <img src="{{ url_for('static', filename='images/actual_vs_predicted.png') }}" 
+                     alt="Actual vs Predicted" 
+                     class="w-full rounded-lg shadow">
+            </div>
+
+            <!-- Feature Importance Visual -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-balance-scale text-purple-500 mr-2"></i>
+                    Feature Importance
+                </h3>
+                <img src="{{ url_for('static', filename='images/feature_importance.png') }}" 
+                     alt="Feature Importance" 
+                     class="w-full rounded-lg shadow">
+            </div>
+
+            <!-- Residual Plot -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-exclamation-triangle text-orange-500 mr-2"></i>
+                    Residual Analysis
+                </h3>
+                <img src="{{ url_for('static', filename='images/residual_plot.png') }}" 
+                     alt="Residual Plot" 
+                     class="w-full rounded-lg shadow">
+                <p class="text-sm text-gray-600 mt-3">
+                    Residuals are randomly distributed around zero, indicating the model doesn't systematically over/under-predict.
+                </p>
+            </div>
+
+            <!-- Model Performance Visual -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-chart-bar text-blue-500 mr-2"></i>
+                    Performance Metrics
+                </h3>
+                <img src="{{ url_for('static', filename='images/metrics.png') }}" 
+                     alt="Model Metrics" 
+                     class="w-full rounded-lg shadow">
+            </div>
+        </div>
+
+        <!-- SHAP Explainability Section -->
+        <div class="mt-8 glass rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-brain text-pink-600 mr-3"></i>
+                Model Explainability (SHAP Values)
+            </h2>
+            <p class="text-gray-600 mb-6">
+                SHAP (SHapley Additive exPlanations) values explain how each feature contributes to individual predictions. 
+                This helps us understand <em>why</em> the model makes specific predictions.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">SHAP Summary Plot</h4>
+                    {% if has_shap %}
+                    <img src="{{ url_for('static', filename='images/shap_summary.png') }}" 
+                         alt="SHAP Summary" 
+                         class="w-full rounded-lg shadow">
+                    {% else %}
+                    <div class="bg-gray-100 rounded-lg p-8 text-center">
+                        <i class="fas fa-cog text-4xl text-gray-400 mb-3"></i>
+                        <p class="text-gray-500">SHAP visualization not available. Install shap: <code>pip install shap</code></p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">SHAP Feature Importance</h4>
+                    {% if has_shap %}
+                    <img src="{{ url_for('static', filename='images/shap_importance.png') }}" 
+                         alt="SHAP Importance" 
+                         class="w-full rounded-lg shadow">
+                    {% else %}
+                    <div class="bg-gray-100 rounded-lg p-8 text-center">
+                        <i class="fas fa-cog text-4xl text-gray-400 mb-3"></i>
+                        <p class="text-gray-500">SHAP visualization not available.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mt-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-4">
+                <h4 class="font-semibold text-gray-700 mb-2">How to Interpret SHAP Values:</h4>
+                <ul class="text-sm text-gray-600 space-y-2">
+                    <li><strong>Red (High values):</strong> Push the prediction higher (more medals)</li>
+                    <li><strong>Blue (Low values):</strong> Push the prediction lower (fewer medals)</li>
+                    <li><strong>Width of distribution:</strong> Shows how consistently a feature affects predictions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Data Insights -->
+        <div class="mt-8 glass rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-database text-indigo-600 mr-3"></i>
+                Data Insights
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <img src="{{ url_for('static', filename='images/distribution.png') }}" 
+                         alt="Distribution" 
+                         class="w-full rounded-lg shadow mb-3">
+                    <p class="text-sm text-gray-600 text-center">Medal distribution comparison between 2024 and predicted 2028</p>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <h4 class="font-semibold text-gray-700 mb-3">Key Observations:</h4>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>Most countries win fewer than 10 medals, creating a right-skewed distribution</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>Top performers (USA, China) are predicted to maintain dominance</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>Economic factors show strong correlation with medal performance</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>The model captures both powerhouses and emerging nations</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm">Olympic Medal Prediction Project | Powered by Machine Learning | Designed by Hazel & Bless</p>
+        </div>
+    </footer>
+</body>
+</html>

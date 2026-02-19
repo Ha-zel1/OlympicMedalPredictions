@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympic Medal Predictions 2028 | AI-Powered Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * { font-family: 'Inter', sans-serif; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .olympic-ring { width: 40px; height: 40px; border-radius: 50%; border: 4px solid; }
+        .ring-blue { border-color: #0085C7; }
+        .ring-yellow { border-color: #F4C300; }
+        .ring-black { border-color: #000000; }
+        .ring-green { border-color: #009F3D; }
+        .ring-red { border-color: #DF0024; }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .table-row:hover {
+            background: linear-gradient(90deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+        }
+        
+        .feature-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="flex space-x-1">
+                        <div class="olympic-ring ring-blue"></div>
+                        <div class="olympic-ring ring-yellow -ml-3"></div>
+                        <div class="olympic-ring ring-black -ml-3"></div>
+                        <div class="olympic-ring ring-green -ml-3"></div>
+                        <div class="olympic-ring ring-red -ml-3"></div>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight">OlympicMedalMetrics</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="/" class="hover:text-yellow-300 transition font-medium">Dashboard</a>
+                    <a href="/analytics" class="hover:text-yellow-300 transition font-medium">Analytics</a>
+                    <a href="/whatif" class="hover:text-yellow-300 transition font-medium">What-If Simulator</a>
+                    <a href="/about" class="hover:text-yellow-300 transition font-medium">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <div class="glass rounded-2xl p-8 mb-8 animate-fade-in shadow-xl">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-2/3">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
+                            AI-Powered Olympic
+                        </span><br>
+                        Medal Predictions
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Advanced Machine Learning model predicting 2028 Los Angeles Olympics medal counts 
+                        using GDP, population, and historical performance data.
+                    </p>
+                    <div class="flex space-x-4">
+                        <span class="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                            <i class="fas fa-brain mr-2"></i>Gradient Boosting
+                        </span>
+                        <span class="px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                            <i class="fas fa-chart-line mr-2"></i>Explainable AI
+                        </span>
+                        <span class="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                            <i class="fas fa-globe mr-2"></i>200+ Countries
+                        </span>
+                    </div>
+                </div>
+                <div class="md:w-1/3 mt-6 md:mt-0 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full blur-3xl opacity-30"></div>
+                        <i class="fas fa-medal text-9xl text-yellow-500 relative z-10 drop-shadow-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Comparison Section -->
+        <div class="glass rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-brain text-purple-600 mr-3"></i>
+                Model Comparison: Three Algorithms
+            </h2>
+            <p class="text-gray-600 mb-6">
+                We trained and compared three machine learning models on your Olympic dataset to find the best predictor.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Linear Regression -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-2 border-blue-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg text-blue-800">Linear Regression</h3>
+                        <span class="px-3 py-1 bg-blue-200 text-blue-800 rounded-full text-xs font-medium">Baseline</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-sm text-gray-600">R² Score</span>
+                            <p class="text-2xl font-bold text-blue-700">{{ "%.3f"|format(all_metrics.linear_regression.r2_score) }}</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">RMSE</span>
+                            <p class="text-xl font-bold text-blue-600">{{ "%.2f"|format(all_metrics.linear_regression.rmse) }} medals</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">MAE</span>
+                            <p class="text-lg font-semibold text-blue-500">{{ "%.2f"|format(all_metrics.linear_regression.mae) }} medals</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-blue-200">
+                        <p class="text-xs text-blue-700">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Linear baseline with R² = 0.76
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Gradient Boosting -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-300 shadow-lg transform scale-105">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg text-green-800">Gradient Boosting</h3>
+                        <span class="px-3 py-1 bg-green-300 text-green-800 rounded-full text-xs font-medium">
+                            <i class="fas fa-star mr-1"></i>Best Model
+                        </span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-sm text-gray-600">R² Score</span>
+                            <p class="text-3xl font-bold text-green-700">{{ "%.3f"|format(all_metrics.gradient_boosting.r2_score) }}</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">RMSE</span>
+                            <p class="text-xl font-bold text-green-600">{{ "%.2f"|format(all_metrics.gradient_boosting.rmse) }} medals</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">MAE</span>
+                            <p class="text-lg font-semibold text-green-500">{{ "%.2f"|format(all_metrics.gradient_boosting.mae) }} medals</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-green-200">
+                        <p class="text-xs text-green-700">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            Best performer with R² = 0.918
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SVM Classification -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border-2 border-purple-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg text-purple-800">SVM Classification</h3>
+                        <span class="px-3 py-1 bg-purple-200 text-purple-800 rounded-full text-xs font-medium">Classifier</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-sm text-gray-600">Accuracy</span>
+                            <p class="text-3xl font-bold text-purple-700">{{ "%.1f"|format(all_metrics.svm.accuracy * 100) }}%</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">Type</span>
+                            <p class="text-lg font-semibold text-purple-600">High/Low Medal Classifier</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-600">Threshold</span>
+                            <p class="text-lg font-semibold text-purple-500">Median-based</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-purple-200">
+                        <p class="text-xs text-purple-700">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Classifies countries above/below median
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Comparison Visualization -->
+            <div class="mt-6">
+                <h4 class="font-semibold text-gray-700 mb-3">Model Performance Comparison Chart</h4>
+                <img src="{{ url_for('static', filename='images/model_comparison.png') }}" 
+                     alt="Model Comparison" 
+                     class="w-full max-w-3xl mx-auto rounded-lg shadow">
+            </div>
+        </div>
+
+        <!-- Model Performance Metrics - Primary Model -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="metric-card rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-blue-100 rounded-lg">
+                        <i class="fas fa-bullseye text-2xl text-blue-600"></i>
+                    </div>
+                    <span class="text-sm text-gray-500">Model Accuracy</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800">{{ "%.3f"|format(metrics.r2_score) }}</h3>
+                <p class="text-sm text-gray-600 mt-1">R² Score (Best Model)</p>
+                <div class="mt-3 bg-gray-200 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="width: {{ metrics.r2_score * 100 }}%"></div>
+                </div>
+            </div>
+
+            <div class="metric-card rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <i class="fas fa-chart-bar text-2xl text-green-600"></i>
+                    </div>
+                    <span class="text-sm text-gray-500">Error Rate</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800">{{ "%.2f"|format(metrics.rmse) }}</h3>
+                <p class="text-sm text-gray-600 mt-1">RMSE (Root Mean Square Error)</p>
+                <div class="mt-3 bg-gray-200 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: {{ (1 - metrics.rmse/100) * 100 }}%"></div>
+                </div>
+            </div>
+
+            <div class="metric-card rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-purple-100 rounded-lg">
+                        <i class="fas fa-calculator text-2xl text-purple-600"></i>
+                    </div>
+                    <span class="text-sm text-gray-500">Avg Error</span>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-800">{{ "%.2f"|format(metrics.mae) }}</h3>
+                <p class="text-sm text-gray-600 mt-1">MAE (Mean Absolute Error)</p>
+                <div class="mt-3 bg-gray-200 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full" style="width: {{ (1 - metrics.mae/50) * 100 }}%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Predictions Table -->
+            <div class="lg:col-span-2 glass rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                                <i class="fas fa-trophy text-yellow-500 mr-3"></i>
+                                <span id="predictionYearTitle">{{ selected_year|default(2028) }} Medal Predictions</span>
+                            </h2>
+                            <p class="text-gray-600 mt-2">Top countries predicted to win medals at Los Angeles <span id="predictionYearText">{{ selected_year|default(2028) }}</span></p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Select Year</label>
+                            <select id="yearSelector" class="block w-full md:w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-lg border shadow-sm bg-white" onchange="changeYear(this.value)">
+                                {% for year in available_years %}
+                                <option value="{{ year }}" {% if year == selected_year|default(2028) %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                    {{ predictions_table | safe }}
+                </div>
+            </div>
+
+            <!-- Feature Importance -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                    Key Predictive Features
+                </h2>
+                <p class="text-sm text-gray-600 mb-4">What drives medal predictions?</p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">Past Medal Performance</span>
+                            <span class="text-purple-600">45%</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-2">
+                            <div class="feature-bar" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">GDP (USD)</span>
+                            <span class="text-purple-600">25%</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-2">
+                            <div class="feature-bar" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">Population</span>
+                            <span class="text-purple-600">20%</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-2">
+                            <div class="feature-bar" style="width: 40%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-medium">GDP per Capita</span>
+                            <span class="text-purple-600">10%</span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-2">
+                            <div class="feature-bar" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
+                    <p class="text-sm text-gray-700">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                        <strong>Insight:</strong> Historical performance is the strongest predictor, 
+                        followed by economic indicators.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualizations -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+            <!-- Comparison Graph -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-chart-bar text-blue-500 mr-2"></i>
+                    2024 vs <span id="comparisonYear">{{ selected_year|default(2028) }}</span> Comparison
+                </h3>
+                <img src="{{ url_for('static', filename='images/comparison_graph.png') }}" 
+                     alt="Comparison Graph" 
+                     class="w-full rounded-lg shadow">
+            </div>
+
+            <!-- Actual vs Predicted -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-crosshairs text-green-500 mr-2"></i>
+                    Model Accuracy
+                </h3>
+                <img src="{{ url_for('static', filename='images/actual_vs_predicted.png') }}" 
+                     alt="Actual vs Predicted" 
+                     class="w-full rounded-lg shadow">
+            </div>
+        </div>
+
+        <!-- Additional Analysis -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-3">
+                    <i class="fas fa-balance-scale text-purple-500 mr-2"></i>
+                    Feature Importance
+                </h3>
+                <img src="{{ url_for('static', filename='images/feature_importance.png') }}" 
+                     alt="Feature Importance" 
+                     class="w-full rounded-lg">
+            </div>
+
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-3">
+                    <i class="fas fa-exclamation-triangle text-orange-500 mr-2"></i>
+                    Residual Analysis
+                </h3>
+                <img src="{{ url_for('static', filename='images/residual_plot.png') }}" 
+                     alt="Residual Plot" 
+                     class="w-full rounded-lg">
+            </div>
+
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-3">
+                    <i class="fas fa-chart-pie text-blue-500 mr-2"></i>
+                    Medal Distribution
+                </h3>
+                <img src="{{ url_for('static', filename='images/distribution.png') }}" 
+                     alt="Distribution" 
+                     class="w-full rounded-lg">
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-12 gradient-bg rounded-2xl p-8 text-white text-center">
+            <h2 class="text-3xl font-bold mb-4">Explore Deeper Insights</h2>
+            <p class="text-lg mb-6 opacity-90">
+                Dive into advanced analytics, run what-if scenarios, and understand the model's decision-making process.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/analytics" class="px-8 py-3 bg-white text-purple-600 rounded-full font-semibold hover:bg-gray-100 transition shadow-lg">
+                    <i class="fas fa-chart-line mr-2"></i>View Analytics
+                </a>
+                <a href="/whatif" class="px-8 py-3 bg-transparent border-2 border-white text-white rounded-full font-semibold hover:bg-white hover:text-purple-600 transition">
+                    <i class="fas fa-flask mr-2"></i>What-If Simulator
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="mb-2">Olympic Medal Prediction Project | Powered by Machine Learning | Designed by Hazel & Bless</p>
+            <p class="text-sm">Built with Flask, scikit-learn, and modern web technologies</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.glass').forEach(el => observer.observe(el));
+        });
+
+        // Function to handle year change
+        function changeYear(year) {
+            // Update the URL with the selected year
+            const url = new URL(window.location.href);
+            url.searchParams.set('year', year);
+            window.location.href = url.toString();
+        }
+    </script>
+</body>
+</html>

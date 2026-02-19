@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What-If Scenario Simulator | OlympicAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .olympic-ring { width: 30px; height: 30px; border-radius: 50%; border: 3px solid; }
+        .ring-blue { border-color: #0085C7; }
+        .ring-yellow { border-color: #F4C300; }
+        .ring-black { border-color: #000000; }
+        .ring-green { border-color: #009F3D; }
+        .ring-red { border-color: #DF0024; }
+        .slider-thumb::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .result-card {
+            transition: all 0.3s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="flex space-x-1">
+                        <div class="olympic-ring ring-blue"></div>
+                        <div class="olympic-ring ring-yellow -ml-2"></div>
+                        <div class="olympic-ring ring-black -ml-2"></div>
+                        <div class="olympic-ring ring-green -ml-2"></div>
+                        <div class="olympic-ring ring-red -ml-2"></div>
+                    </div>
+                    <span class="text-xl font-bold">OlympicMedalMetrics</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="/" class="hover:text-yellow-300 transition font-medium">Dashboard</a>
+                    <a href="/analytics" class="hover:text-yellow-300 transition font-medium">Analytics</a>
+                    <a href="/whatif" class="text-yellow-300 font-medium">What-If Simulator</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-3">
+                <i class="fas fa-flask text-purple-600 mr-3"></i>
+                What-If Scenario Simulator
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Explore how changes in economic and demographic factors could affect Olympic medal predictions. 
+                Adjust GDP, population, or past performance to see the impact.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Control Panel -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-sliders-h text-purple-600 mr-3"></i>
+                    Scenario Configuration
+                </h2>
+
+                <!-- Country Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-flag mr-2"></i>Select Country
+                    </label>
+                    <select id="countrySelect" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="">Choose a country...</option>
+                        {% for country in countries %}
+                        <option value="{{ country }}">{{ country }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Scenario Sliders -->
+                <div id="sliders" class="space-y-6 opacity-50 pointer-events-none transition-opacity">
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-gray-700">
+                                <i class="fas fa-dollar-sign text-green-600 mr-2"></i>GDP (USD) Change
+                            </label>
+                            <span id="gdpValue" class="text-sm font-bold text-purple-600">0%</span>
+                        </div>
+                        <input type="range" id="gdpSlider" min="-50" max="100" value="0" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>-50%</span>
+                            <span>0%</span>
+                            <span>+100%</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-purple-50 rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-gray-700">
+                                <i class="fas fa-users text-blue-600 mr-2"></i>Population Change
+                            </label>
+                            <span id="popValue" class="text-sm font-bold text-purple-600">0%</span>
+                        </div>
+                        <input type="range" id="popSlider" min="-30" max="50" value="0" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>-30%</span>
+                            <span>0%</span>
+                            <span>+50%</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-yellow-50 rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-semibold text-gray-700">
+                                <i class="fas fa-medal text-yellow-600 mr-2"></i>Past Medal Performance
+                            </label>
+                            <span id="pastValue" class="text-sm font-bold text-purple-600">0%</span>
+                        </div>
+                        <input type="range" id="pastSlider" min="-50" max="100" value="0" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>-50%</span>
+                            <span>0%</span>
+                            <span>+100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-6 flex space-x-4">
+                    <button id="runScenario" disabled
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold opacity-50 cursor-not-allowed transition hover:shadow-lg">
+                        <i class="fas fa-play mr-2"></i>Run Scenario
+                    </button>
+                    <button id="resetScenario"
+                            class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition">
+                        <i class="fas fa-undo mr-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="glass rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-chart-line text-green-600 mr-3"></i>
+                    Scenario Results
+                </h2>
+
+                <div id="resultsPlaceholder" class="text-center py-12">
+                    <i class="fas fa-calculator text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">Select a country and adjust parameters to see predictions</p>
+                </div>
+
+                <div id="resultsContent" class="hidden">
+                    <!-- Base vs New Prediction -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <p class="text-sm text-gray-600 mb-1">Baseline 2028 Prediction</p>
+                            <h3 id="basePrediction" class="text-3xl font-bold text-gray-700">--</h3>
+                            <p class="text-xs text-gray-500">medals</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 text-center">
+                            <p class="text-sm text-gray-600 mb-1">New 2028 Prediction</p>
+                            <h3 id="newPrediction" class="text-3xl font-bold text-purple-600">--</h3>
+                            <p class="text-xs text-gray-500">medals</p>
+                        </div>
+                    </div>
+
+                    <!-- Impact Analysis -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Impact Analysis</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
+                                <span class="text-gray-600">Change in Medals</span>
+                                <span id="medalChange" class="text-xl font-bold">--</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
+                                <span class="text-gray-600">Percentage Change</span>
+                                <span id="percentChange" class="text-xl font-bold">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Indicator -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">Prediction Impact</span>
+                            <span id="impactLabel" class="text-sm font-bold">Neutral</span>
+                        </div>
+                        <div class="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="absolute inset-0 flex">
+                                <div class="w-1/2 bg-red-400 opacity-30"></div>
+                                <div class="w-1/2 bg-green-400 opacity-30"></div>
+                            </div>
+                            <div id="impactMarker" class="absolute top-0 w-1 h-full bg-purple-600 transition-all duration-500" style="left: 50%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>Decrease</span>
+                            <span>No Change</span>
+                            <span>Increase</span>
+                        </div>
+                    </div>
+
+                    <!-- Insight Box -->
+                    <div id="insightBox" class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-l-4 border-purple-500">
+                        <p class="text-sm text-gray-700">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                            <span id="insightText">Adjust the sliders to see how different factors affect medal predictions.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preset Scenarios -->
+        <div class="mt-8 glass rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-magic text-purple-600 mr-3"></i>
+                Quick Scenario Presets
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="loadPreset('economic_boom')" class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover:shadow-md transition text-left">
+                    <h4 class="font-semibold text-green-800 mb-1">
+                        <i class="fas fa-arrow-trend-up mr-2"></i>Economic Boom
+                    </h4>
+                    <p class="text-sm text-green-700">+50% GDP, +10% Population</p>
+                </button>
+                <button onclick="loadPreset('population_surge')" class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 hover:shadow-md transition text-left">
+                    <h4 class="font-semibold text-blue-800 mb-1">
+                        <i class="fas fa-users mr-2"></i>Population Surge
+                    </h4>
+                    <p class="text-sm text-blue-700">+30% Population, Stable GDP</p>
+                </button>
+                <button onclick="loadPreset('sports_investment')" class="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200 hover:shadow-md transition text-left">
+                    <h4 class="font-semibold text-yellow-800 mb-1">
+                        <i class="fas fa-running mr-2"></i>Sports Investment
+                    </h4>
+                    <p class="text-sm text-yellow-700">+50% Past Performance Boost</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm">Olympic Medal Prediction Project | Powered by Machine Learning | Designed by Hazel & Bless</p>
+        </div>
+    </footer>
+
+    <script>
+        // State management
+        let currentCountry = null;
+        let baseValues = {};
+
+        const countrySelect = document.getElementById('countrySelect');
+        const slidersDiv = document.getElementById('sliders');
+        const runButton = document.getElementById('runScenario');
+        const gdpSlider = document.getElementById('gdpSlider');
+        const popSlider = document.getElementById('popSlider');
+        const pastSlider = document.getElementById('pastSlider');
+
+        // Update slider value displays
+        function updateSliderValues() {
+            document.getElementById('gdpValue').textContent = (gdpSlider.value > 0 ? '+' : '') + gdpSlider.value + '%';
+            document.getElementById('popValue').textContent = (popSlider.value > 0 ? '+' : '') + popSlider.value + '%';
+            document.getElementById('pastValue').textContent = (pastSlider.value > 0 ? '+' : '') + pastSlider.value + '%';
+        }
+
+        [gdpSlider, popSlider, pastSlider].forEach(slider => {
+            slider.addEventListener('input', updateSliderValues);
+        });
+
+        // Country selection
+        countrySelect.addEventListener('change', async function() {
+            currentCountry = this.value;
+            
+            if (currentCountry) {
+                slidersDiv.classList.remove('opacity-50', 'pointer-events-none');
+                runButton.disabled = false;
+                runButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                
+                // Fetch country data
+                const response = await fetch(`/api/country/${encodeURIComponent(currentCountry)}`);
+                const data = await response.json();
+                
+                if (data.prediction) {
+                    baseValues.predicted = data.prediction.predicted_2028;
+                }
+            } else {
+                slidersDiv.classList.add('opacity-50', 'pointer-events-none');
+                runButton.disabled = true;
+                runButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        });
+
+        // Run scenario
+        runButton.addEventListener('click', async function() {
+            if (!currentCountry) return;
+
+            const changes = {};
+            
+            if (parseInt(gdpSlider.value) !== 0) {
+                changes.GDP_USD = parseInt(gdpSlider.value) / 100;
+            }
+            if (parseInt(popSlider.value) !== 0) {
+                changes.Population = parseInt(popSlider.value) / 100;
+            }
+            if (parseInt(pastSlider.value) !== 0) {
+                changes.Past_Total = parseInt(pastSlider.value) / 100;
+            }
+
+            try {
+                const response = await fetch('/api/whatif', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ country: currentCountry, changes: changes })
+                });
+
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // Display results
+        function displayResults(result) {
+            document.getElementById('resultsPlaceholder').classList.add('hidden');
+            document.getElementById('resultsContent').classList.remove('hidden');
+
+            document.getElementById('basePrediction').textContent = result.result.base_prediction;
+            document.getElementById('newPrediction').textContent = result.result.new_prediction;
+            
+            const change = result.result.difference;
+            const percentChange = result.result.percent_change;
+            
+            const changeEl = document.getElementById('medalChange');
+            changeEl.textContent = (change > 0 ? '+' : '') + change;
+            changeEl.className = 'text-xl font-bold ' + (change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-gray-600');
+            
+            const percentEl = document.getElementById('percentChange');
+            percentEl.textContent = (percentChange > 0 ? '+' : '') + percentChange + '%';
+            percentEl.className = 'text-xl font-bold ' + (percentChange > 0 ? 'text-green-600' : percentChange < 0 ? 'text-red-600' : 'text-gray-600');
+
+            // Update impact marker
+            const marker = document.getElementById('impactMarker');
+            const impactLabel = document.getElementById('impactLabel');
+            
+            let position = 50;
+            if (percentChange > 0) {
+                position = 50 + Math.min(percentChange, 50);
+                impactLabel.textContent = 'Increased';
+                impactLabel.className = 'text-sm font-bold text-green-600';
+            } else if (percentChange < 0) {
+                position = 50 + Math.max(percentChange * 0.5, -50);
+                impactLabel.textContent = 'Decreased';
+                impactLabel.className = 'text-sm font-bold text-red-600';
+            } else {
+                impactLabel.textContent = 'Neutral';
+                impactLabel.className = 'text-sm font-bold text-gray-600';
+            }
+            marker.style.left = position + '%';
+
+            // Update insight
+            let insight = '';
+            if (Math.abs(percentChange) < 5) {
+                insight = 'Small changes in the selected factors have minimal impact on medal predictions for this country.';
+            } else if (percentChange > 20) {
+                insight = 'Significant improvement predicted! The changes would substantially boost Olympic performance.';
+            } else if (percentChange < -20) {
+                insight = 'Warning: The projected changes would negatively impact Olympic medal count.';
+            } else {
+                insight = `Moderate ${percentChange > 0 ? 'improvement' : 'decline'} expected based on the scenario parameters.`;
+            }
+            document.getElementById('insightText').textContent = insight;
+        }
+
+        // Reset
+        document.getElementById('resetScenario').addEventListener('click', function() {
+            gdpSlider.value = 0;
+            popSlider.value = 0;
+            pastSlider.value = 0;
+            updateSliderValues();
+            document.getElementById('resultsContent').classList.add('hidden');
+            document.getElementById('resultsPlaceholder').classList.remove('hidden');
+        });
+
+        // Presets
+        function loadPreset(preset) {
+            if (!currentCountry) {
+                alert('Please select a country first!');
+                return;
+            }
+
+            switch(preset) {
+                case 'economic_boom':
+                    gdpSlider.value = 50;
+                    popSlider.value = 10;
+                    pastSlider.value = 0;
+                    break;
+                case 'population_surge':
+                    gdpSlider.value = 0;
+                    popSlider.value = 30;
+                    pastSlider.value = 0;
+                    break;
+                case 'sports_investment':
+                    gdpSlider.value = 0;
+                    popSlider.value = 0;
+                    pastSlider.value = 50;
+                    break;
+            }
+            updateSliderValues();
+            runButton.click();
+        }
+
+        // Initialize
+        updateSliderValues();
+    </script>
+</body>
+</html>

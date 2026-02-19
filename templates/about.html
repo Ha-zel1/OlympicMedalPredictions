@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | OlympicAI - Medal Prediction Methodology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .olympic-ring { width: 30px; height: 30px; border-radius: 50%; border: 3px solid; }
+        .ring-blue { border-color: #0085C7; }
+        .ring-yellow { border-color: #F4C300; }
+        .ring-black { border-color: #000000; }
+        .ring-green { border-color: #009F3D; }
+        .ring-red { border-color: #DF0024; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="flex space-x-1">
+                        <div class="olympic-ring ring-blue"></div>
+                        <div class="olympic-ring ring-yellow -ml-2"></div>
+                        <div class="olympic-ring ring-black -ml-2"></div>
+                        <div class="olympic-ring ring-green -ml-2"></div>
+                        <div class="olympic-ring ring-red -ml-2"></div>
+                    </div>
+                    <span class="text-xl font-bold">OlympicMedalMetrics</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="/" class="hover:text-yellow-300 transition font-medium">Dashboard</a>
+                    <a href="/analytics" class="hover:text-yellow-300 transition font-medium">Analytics</a>
+                    <a href="/about" class="text-yellow-300 font-medium">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Hero -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
+                    About This Project
+                </span>
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                A comprehensive machine learning solution for predicting Olympic medal counts, 
+                built with modern data science techniques and explainable AI principles.
+            </p>
+        </div>
+
+        <!-- Project Overview -->
+        <div class="glass rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-project-diagram text-purple-600 mr-3"></i>
+                Project Overview
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Objective</h3>
+                    <p class="text-gray-600 mb-4">
+                        Predict the total medal count for each participating country in the 2028 Los Angeles 
+                        Olympic Games using historical performance data and economic indicators. The project 
+                        demonstrates end-to-end data science capabilities from data preprocessing to model 
+                        deployment and visualization.
+                    </p>
+                    
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Key Features</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>ML-powered predictions using Gradient Boosting</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>Interactive dashboard with real-time visualizations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>What-If scenario simulator for hypothesis testing</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>Model explainability with SHAP values</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span>RESTful API for programmatic access</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Tech Stack</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-blue-50 rounded-lg p-3 text-center">
+                            <i class="fab fa-python text-2xl text-blue-600 mb-2"></i>
+                            <p class="text-sm font-medium">Python</p>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-3 text-center">
+                            <i class="fas fa-flask text-2xl text-green-600 mb-2"></i>
+                            <p class="text-sm font-medium">Flask</p>
+                        </div>
+                        <div class="bg-orange-50 rounded-lg p-3 text-center">
+                            <i class="fas fa-brain text-2xl text-orange-600 mb-2"></i>
+                            <p class="text-sm font-medium">scikit-learn</p>
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-3 text-center">
+                            <i class="fas fa-table text-2xl text-purple-600 mb-2"></i>
+                            <p class="text-sm font-medium">Pandas</p>
+                        </div>
+                        <div class="bg-red-50 rounded-lg p-3 text-center">
+                            <i class="fas fa-chart-bar text-2xl text-red-600 mb-2"></i>
+                            <p class="text-sm font-medium">Matplotlib</p>
+                        </div>
+                        <div class="bg-cyan-50 rounded-lg p-3 text-center">
+                            <i class="fas fa-wind text-2xl text-cyan-600 mb-2"></i>
+                            <p class="text-sm font-medium">TailwindCSS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Methodology -->
+        <div class="glass rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-cogs text-blue-600 mr-3"></i>
+                Methodology
+            </h2>
+
+            <div class="relative">
+                <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-blue-500"></div>
+                
+                <div class="space-y-8">
+                    <!-- Step 1 -->
+                    <div class="relative pl-12 timeline-item">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">1. Data Collection & Preprocessing</h3>
+                        <p class="text-gray-600">
+                            Historical Olympic medal data merged with economic indicators (GDP, GDP per capita) 
+                            and population statistics. Data cleaning handled missing values and standardized formats.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative pl-12 timeline-item">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">2. Feature Engineering</h3>
+                        <p class="text-gray-600">
+                            Created lag features for past performance (4-year Olympic cycles), calculated growth rates, 
+                            and normalized economic indicators for cross-country comparison.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative pl-12 timeline-item">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">3. Model Selection & Training</h3>
+                        <p class="text-gray-600">
+                            Selected Gradient Boosting Regressor for its ability to capture non-linear relationships 
+                            and handle mixed data types effectively. Hyperparameters tuned for optimal performance.
+                        </p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative pl-12 timeline-item">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">4. Model Evaluation</h3>
+                        <p class="text-gray-600">
+                            Evaluated using R², RMSE, and MAE metrics. Validated on historical data to ensure 
+                            predictions align with actual Olympic outcomes.
+                        </p>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="relative pl-12 timeline-item">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">5. Deployment & Visualization</h3>
+                        <p class="text-gray-600">
+                            Built interactive web application with Flask, providing dashboards, API endpoints, 
+                            and what-if scenario analysis for end-users.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Architecture -->
+        <div class="glass rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-sitemap text-green-600 mr-3"></i>
+                Model Architecture
+            </h2>
+
+            <div class="bg-gray-50 rounded-lg p-6 overflow-x-auto">
+                <div class="flex items-center justify-between min-w-max space-x-4">
+                    <!-- Input Layer -->
+                    <div class="text-center">
+                        <div class="bg-blue-100 rounded-lg p-4 w-32">
+                            <i class="fas fa-database text-2xl text-blue-600 mb-2"></i>
+                            <p class="text-sm font-medium">Input Features</p>
+                            <p class="text-xs text-gray-500 mt-1">4 features</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-400"></i>
+
+                    <!-- Processing -->
+                    <div class="text-center">
+                        <div class="bg-purple-100 rounded-lg p-4 w-40">
+                            <i class="fas fa-brain text-2xl text-purple-600 mb-2"></i>
+                            <p class="text-sm font-medium">Gradient Boosting</p>
+                            <p class="text-xs text-gray-500 mt-1">200 estimators</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-400"></i>
+
+                    <!-- Output -->
+                    <div class="text-center">
+                        <div class="bg-green-100 rounded-lg p-4 w-32">
+                            <i class="fas fa-medal text-2xl text-green-600 mb-2"></i>
+                            <p class="text-sm font-medium">Prediction</p>
+                            <p class="text-xs text-gray-500 mt-1">Medal count</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-arrow-right text-gray-400"></i>
+
+                    <!-- Explainability -->
+                    <div class="text-center">
+                        <div class="bg-yellow-100 rounded-lg p-4 w-32">
+                            <i class="fas fa-lightbulb text-2xl text-yellow-600 mb-2"></i>
+                            <p class="text-sm font-medium">SHAP</p>
+                            <p class="text-xs text-gray-500 mt-1">Explainability</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-800 mb-2">Input Features</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• Past Medal Total</li>
+                        <li>• GDP (USD)</li>
+                        <li>• Population</li>
+                        <li>• GDP per Capita</li>
+                    </ul>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-purple-800 mb-2">Model Specs</h4>
+                    <ul class="text-sm text-purple-700 space-y-1">
+                        <li>• Algorithm: GBR</li>
+                        <li>• Estimators: 200</li>
+                        <li>• Learning Rate: 0.1</li>
+                        <li>• Max Depth: 4</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-800 mb-2">Output</h4>
+                    <ul class="text-sm text-green-700 space-y-1">
+                        <li>• Predicted Medals</li>
+                        <li>• Confidence Range</li>
+                        <li>• Country Ranking</li>
+                        <li>• 2028 Forecast</li>
+                    </ul>
+                </div>
+                <div class="bg-yellow-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-yellow-800 mb-2">XAI Layer</h4>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• SHAP Values</li>
+                        <li>• Feature Importance</li>
+                        <li>• Permutation Import.</li>
+                        <li>• Partial Dependence</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why This Matters -->
+        <div class="glass rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-star text-yellow-500 mr-3"></i>
+                Why This Project Stands Out
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
+                    <i class="fas fa-brain text-3xl text-blue-600 mb-4"></i>
+                    <h3 class="font-semibold text-gray-800 mb-2">Explainable AI</h3>
+                    <p class="text-sm text-gray-600">
+                        Not just predictions - understand WHY the model makes each prediction through 
+                        SHAP values and feature importance analysis.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6">
+                    <i class="fas fa-flask text-3xl text-green-600 mb-4"></i>
+                    <h3 class="font-semibold text-gray-800 mb-2">Interactive Simulation</h3>
+                    <p class="text-sm text-gray-600">
+                        The What-If simulator allows users to test hypotheses and understand 
+                        how economic changes could impact Olympic performance.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
+                    <i class="fas fa-code text-3xl text-purple-600 mb-4"></i>
+                    <h3 class="font-semibold text-gray-800 mb-2">Full-Stack Implementation</h3>
+                    <p class="text-sm text-gray-600">
+                        Complete end-to-end solution: data pipeline, ML model, REST API, 
+                        and modern web interface with professional UI/UX.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contribution -->
+        <div class="glass rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-hands-helping text-purple-600 mr-3"></i>
+                Help Us Improve
+            </h2>
+
+            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 mb-6">
+                <p class="text-gray-700 mb-4">
+                    Help us improve our project: Given that there is always room for improvement, help us make the app better by sending us your suggestions and as well as data we can use to refine our model. Would appreciate data with country sports funding and countries sport culture data.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                    <a href="https://github.com/bless-atwork" target="_blank" class="inline-flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+                        <i class="fab fa-github mr-2"></i>
+                        Bless's GitHub
+                    </a>
+                    <a href="https://github.com/Ha-zel1/" target="_blank" class="inline-flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+                        <i class="fab fa-github mr-2"></i>
+                        Hazel's GitHub
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-800 mb-2">
+                        <i class="fas fa-database mr-2"></i>Data We're Looking For
+                    </h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• Country sports funding data</li>
+                        <li>• Sports culture metrics</li>
+                        <li>• Training facilities information</li>
+                        <li>• Historical sports participation</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-800 mb-2">
+                        <i class="fas fa-lightbulb mr-2"></i>Suggestions Welcome
+                    </h4>
+                    <ul class="text-sm text-green-700 space-y-1">
+                        <li>• Feature improvements</li>
+                        <li>• Model enhancements</li>
+                        <li>• UI/UX feedback</li>
+                        <li>• New prediction factors</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Talking Points -->
+        <div class="gradient-bg rounded-xl shadow-lg p-8 text-white">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fas fa-comments mr-3"></i>
+                Interview Talking Points
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-lg mb-3">Technical Depth</h3>
+                    <ul class="space-y-2 text-white/90">
+                        <li>• "Implemented and compared 3 ML algorithms: Linear Regression (R²=0.760), Gradient Boosting (R²=0.918), and SVM (61% accuracy)"</li>
+                        <li>• "Selected Gradient Boosting as primary model - explains 91.8% of variance with only 5.27 medal RMSE"</li>
+                        <li>• "Used permutation importance and model comparison for interpretability"</li>
+                        <li>• "Built RESTful API with Flask for programmatic access to all three models"</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg mb-3">Business Impact</h3>
+                    <ul class="space-y-2 text-white/90">
+                        <li>• "What-If simulator enables strategic sports investment planning"</li>
+                        <li>• "Dashboard provides actionable insights for 200+ countries using real Olympic data"</li>
+                        <li>• "Three-model comparison demonstrates rigorous model selection process"</li>
+                        <li>• "Real-world application of sports analytics on actual 1960-2024 Olympic dataset"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Model Comparison Summary -->
+            <div class="mt-6 bg-white/10 rounded-lg p-4">
+                <h4 class="font-semibold mb-3">Model Performance Summary (Your Dataset Results)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="bg-white/20 rounded p-3">
+                        <strong>Linear Regression</strong><br>
+                        R²: 0.760 | RMSE: 8.99 medals
+                    </div>
+                    <div class="bg-white/30 rounded p-3 border-2 border-white/50">
+                        <strong>✓ Gradient Boosting (Best)</strong><br>
+                        R²: 0.918 | RMSE: 5.27 medals
+                    </div>
+                    <div class="bg-white/20 rounded p-3">
+                        <strong>SVM Classification</strong><br>
+                        Accuracy: 61% | High/Low Classifier
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm mb-2">Olympic Medal Prediction Project | Powered by Machine Learning | Designed by Hazel & Bless</p>
+            <p class="text-xs">Built with Python, Flask, scikit-learn & modern web technologies</p>
+        </div>
+    </footer>
+</body>
+</html>
