@@ -38,7 +38,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Visit `(https://olympicmedalpredictions.onrender.com)` to explore the dashboard.
+Visit `[https://olympicmedalpredictions.onrender.com]` to explore the dashboard.
 
 ---
 
