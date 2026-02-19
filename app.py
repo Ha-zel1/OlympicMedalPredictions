@@ -7,8 +7,13 @@ from flask import Flask, render_template, jsonify, request
 from model_enhanced import train_and_predict_model, what_if_prediction, get_country_historical_data
 import pandas as pd
 import json
+import os
 
 app = Flask(__name__)
+
+# Configure for Render
+app.config['DEBUG'] = False
+port = int(os.environ.get('PORT', 5000))
 
 # Store model results globally for efficiency
 model_results = None
@@ -192,4 +197,4 @@ def about():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
