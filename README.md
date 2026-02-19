@@ -5,13 +5,13 @@
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.0%2B-orange)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **AI-Powered Olympic Medal Predictions for the 2028 Los Angeles Games**
+> ** Olympic Medal Predictions Powered with AI capabilities for the 2028 Los Angeles Games and further on**
 
-![OlympicAI Dashboard](static/images/dashboard-preview.png)
+![OlympicAI Dashboard]([static/images/dashboard-preview.png](https://olympicmedalpredictions.onrender.com))
 
 ## 🎯 Project Overview
 
-OlympicAI is a comprehensive machine learning solution that predicts Olympic medal counts for the 2028 Los Angeles Olympics. Built with modern data science techniques and explainable AI principles, this project demonstrates end-to-end capabilities from data preprocessing to model deployment and visualization.
+OlympicAI is a comprehensive machine learning solution that predicts Olympic medal counts for the 2028 Los Angeles Olympics and further on. Built with modern data science techniques and explainable AI principles, this project demonstrates end-to-end capabilities from data preprocessing to model deployment and visualization.
 
 ### Key Features
 
@@ -38,7 +38,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Visit `http://localhost:5000` to explore the dashboard.
+Visit `(https://olympicmedalpredictions.onrender.com)` to explore the dashboard.
 
 ---
 
@@ -271,8 +271,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📧 Contact
 
 For questions or feedback, please reach out:
-- LinkedIn: [Your LinkedIn]
-- Email: your.email@example.com
+- Email: Blessatwork@gmail.com & mahasenihazel@gmail.com
 
 ---
 
