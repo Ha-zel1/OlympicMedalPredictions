@@ -43,4 +43,4 @@ static/images/*.png
 static/images/*.jpg
 
 # Render
-render.yaml
+# render.yaml  # Temporarily commented out
