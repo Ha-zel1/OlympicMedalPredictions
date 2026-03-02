@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympic Medal Prediction Tool</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        select, button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        select {
+            background: white;
+            color: #333;
+        }
+        
+        select:hover {
+            border-color: #764ba2;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .chart-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .chart-box h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #3c3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            select, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏅 Olympic Medal Prediction Tool</h1>
+        <p class="subtitle">Predict future Olympic medal counts using machine learning</p>
+        
+        <div class="controls">
+            <select id="yearSelect">
+                <option value="2028">2028 Olympics (LA)</option>
+                <option value="2032">2032 Olympics (Brisbane)</option>
+                <option value="2036">2036 Olympics</option>
+                <option value="2040">2040 Olympics</option>
+            </select>
+            <button onclick="fetchPredictions()">Generate Predictions</button>
+        </div>
+        
+        <div id="message"></div>
+        <div id="chartsContainer" class="charts-container"></div>
+    </div>
+    
+    <script>
+        async function fetchPredictions() {
+            const year = document.getElementById('yearSelect').value;
+            const messageDiv = document.getElementById('message');
+            const chartsDiv = document.getElementById('chartsContainer');
+            
+            messageDiv.innerHTML = '<div class="loading">Loading predictions...</div>';
+            chartsDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch(`/predict?year=${year}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                messageDiv.innerHTML = '<div class="success">✓ Predictions loaded successfully!</div>';
+                displayCharts(data);
+                
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        function displayCharts(data) {
+            const chartsDiv = document.getElementById('chartsContainer');
+            
+            if (data.prediction_data && data.prediction_data.length > 0) {
+                // Top Countries Chart
+                const topCountries = data.prediction_data.slice(0, 15);
+                const trace1 = {
+                    x: topCountries.map(d => d.Country_Name || d.country),
+                    y: topCountries.map(d => d.Total || d.actual),
+                    name: 'Actual Medals',
+                    type: 'bar',
+                    marker: { color: '#667eea' }
+                };
+                const trace2 = {
+                    x: topCountries.map(d => d.Country_Name || d.country),
+                    y: topCountries.map(d => d.Predicted_Total || d.predicted),
+                    name: 'Predicted Medals',
+                    type: 'bar',
+                    marker: { color: '#764ba2' }
+                };
+                
+                const layout = {
+                    title: 'Top 15 Countries: Actual vs Predicted Medals',
+                    barmode: 'group',
+                    height: 400,
+                    xaxis: { tickangle: -45 },
+                    margin: { b: 100 }
+                };
+                
+                const chartBox = document.createElement('div');
+                chartBox.className = 'chart-box';
+                chartBox.innerHTML = '<h3>Medal Predictions</h3><div id="chart1"></div>';
+                chartsDiv.appendChild(chartBox);
+                
+                Plotly.newPlot('chart1', [trace1, trace2], layout, { responsive: true });
+            }
+            
+            // Feature Importance Chart
+            if (data.feature_importance && data.feature_importance.length > 0) {
+                const trace3 = {
+                    x: data.feature_importance.map(f => f.feature),
+                    y: data.feature_importance.map(f => f.importance),
+                    type: 'bar',
+                    marker: { color: '#82ca9d' }
+                };
+                
+                const layout3 = {
+                    title: 'Feature Importance',
+                    height: 300,
+                    xaxis: { tickangle: -45 },
+                    margin: { b: 100 }
+                };
+                
+                const chartBox2 = document.createElement('div');
+                chartBox2.className = 'chart-box';
+                chartBox2.innerHTML = '<h3>Feature Importance</h3><div id="chart2"></div>';
+                chartsDiv.appendChild(chartBox2);
+                
+                Plotly.newPlot('chart2', [trace3], layout3, { responsive: true });
+            }
+            
+            // Model Metrics
+            if (data.model_metrics) {
+                const metricsBox = document.createElement('div');
+                metricsBox.className = 'chart-box';
+                metricsBox.innerHTML = `
+                    <h3>Model Performance</h3>
+                    <p><strong>R² Score:</strong> ${(data.model_metrics.r2_score * 100).toFixed(2)}%</p>
+                    <p><strong>RMSE:</strong> ${data.model_metrics.rmse.toFixed(2)}</p>
+                    <p><strong>MAE:</strong> ${data.model_metrics.mae.toFixed(2)}</p>
+                `;
+                chartsDiv.appendChild(metricsBox);
+            }
+        }
+        
+        // Load predictions on page load
+        window.addEventListener('load', fetchPredictions);
+    </script>
+</body>
+</html>
